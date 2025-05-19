@@ -1,7 +1,6 @@
 import 'package:calculator/core/theme/app_colors.dart';
 import 'package:calculator/src/controllers/home_controller.dart';
 import 'package:calculator/src/widgets/all_button_widgets.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';

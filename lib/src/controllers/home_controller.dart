@@ -33,17 +33,27 @@ class HomeController extends GetxController {
   // add num2 and operator in num1
   void onTapAdd(value) {
     if (value == AllButtonWidgets.del) {
-      onTapClear();
+      onTapDel();
     } else if (value == AllButtonWidgets.clr) {
       onTapClearAll();
+    } else if (value == AllButtonWidgets.per) {
+      onTapPercentage();
+    } else if (value == AllButtonWidgets.calculate) {
+      onTapCalculate();
     } else {
-      num1.value += value;
+      onTapAppend(value);
     }
   }
 
-  // clear one by one value from num1
-  void onTapClear() {
-    num1.value = num1.value.substring(0, num1.value.length - 1);
+  // clear on the delete bttn
+  void onTapDel() {
+    if (num2.value.isNotEmpty) {
+      num2.value = num2.value.substring(0, num2.value.length - 1);
+    } else if (operator.value.isNotEmpty) {
+      operator.value = "";
+    } else if (num1.value.isNotEmpty) {
+      num1.value = num1.value.substring(0, num1.value.length - 1);
+    }
   }
 
   // clean all value
@@ -51,5 +61,85 @@ class HomeController extends GetxController {
     num1.value = "";
     num2.value = "";
     operator.value = "";
+  }
+
+  // calculate percentage
+  void onTapPercentage() {
+    if (num1.value.isNotEmpty &&operator.value.isNotEmpty && num2.value.isNotEmpty) {
+      onTapCalculate();
+    }
+    if (operator.value.isNotEmpty) return;
+
+    final num = double.parse(num1.value);
+    num1.value = (num / 100).toString();
+  }
+
+  // calculate value
+  void onTapCalculate() {
+    if (num1.value.isEmpty) return;
+    if (operator.value.isEmpty) return;
+    if (num2.value.isEmpty) return;
+
+    final n1 = double.parse(num1.value);
+    final n2 = double.parse(num2.value);
+
+    var result = 0.0;
+
+    switch (operator.value) {
+      case AllButtonWidgets.add:
+        result = n1 + n2;
+        break;
+      case AllButtonWidgets.subtract:
+        result = n1 - n2;
+        break;
+      case AllButtonWidgets.multiply:
+        result = n1 * n2;
+        break;
+      case AllButtonWidgets.divide:
+        result = n1 / n2;
+        break;
+    }
+
+    num1.value = result.toString();
+
+    if (num1.endsWith(".0")) {
+      num1.value = num1.value.substring(0, num1.value.length - 2);
+    }
+
+    operator.value = "";
+    num2.value = "";
+  }
+
+  // append value to the end
+  void onTapAppend(String value) {
+    if (value != AllButtonWidgets.dot && int.tryParse(value) == null) {
+      if (operator.value.isNotEmpty && num2.value.isNotEmpty) {
+        onTapCalculate();
+      }
+      operator.value = value;
+    }
+    // assigned value to num 1
+    else if (num1.isEmpty || operator.isEmpty) {
+      // number be "1.2"
+      if (value == AllButtonWidgets.dot && num1.value.contains(AllButtonWidgets.dot)) return;
+      if (value == AllButtonWidgets.dot &&
+          (num1.isEmpty || num1.value == AllButtonWidgets.n0)) {
+        value = "0.";
+      }
+
+      num1.value += value;
+    }
+    // assugned value to num 2
+    else if (num2.isEmpty || operator.isNotEmpty) {
+      if (value == AllButtonWidgets.dot &&
+          num2.value.contains(AllButtonWidgets.dot))
+        return;
+      if (value == AllButtonWidgets.dot &&
+          (num2.isEmpty || num2.value == AllButtonWidgets.n0)) {
+        value = "0.";
+      }
+
+      num2.value += value;
+    }
   }
 }
